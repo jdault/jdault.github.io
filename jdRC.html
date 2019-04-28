@@ -1,0 +1,127 @@
+<html>
+
+<head>
+  <title>jdRC Virtual Robot Simulation Environment</title>
+  <link rel="stylesheet" href="jdRC.css">
+</head>
+
+<body>
+  <!-- floating control panel -->
+  <div id="tpPanel">
+    <div id="tpLabel">Click Here to Drag Window</div>
+    <div class="tpRow">
+      <input type="text" id="jogStepSize" value="5">
+      <p>Step Size (Degrees per button press)</p>
+    </div>
+    <div class="tpRow">
+      <div class="tpJogPair">
+        <button class=jogButton onmousedown="inter=setInterval(jogClick,100,-1);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">< -J1</button>
+        <input type="text" id="j1Text">
+        <button class=jogButton onmousedown="inter=setInterval(jogClick,100,1);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">+J1 ></button>
+      </div>
+      <div class="tpJogPair">
+        <button class=jogButton onmousedown="inter=setInterval(jogClick,100,-4);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">< -J4</button>
+        <input type="text" id="j4Text">
+        <button class=jogButton onmousedown="inter=setInterval(jogClick,100,4);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">+J4 ></button>
+      </div>
+  </div>
+
+  <div class="tpRow">
+    <div class="tpJogPair">
+      <button class=jogButton onmousedown="inter=setInterval(jogClick,100,-2);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">< -J2</button>
+      <input type="text" id="j2Text">
+      <button class=jogButton onmousedown="inter=setInterval(jogClick,100,2);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">+J2 ></button>
+    </div>
+    <div class="tpJogPair">
+      <button class=jogButton onmousedown="inter=setInterval(jogClick,100,-5);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">< -J5</button>
+      <input type="text" id="j5Text">
+      <button class=jogButton onmousedown="inter=setInterval(jogClick,100,5);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">+J5 ></button>
+    </div>
+  </div>
+
+  <div class="tpRow">
+    <div class="tpJogPair">
+      <button class=jogButton onmousedown="inter=setInterval(jogClick,100,-3);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">< -J3</button>
+      <input type="text" id="j3Text">
+      <button class=jogButton onmousedown="inter=setInterval(jogClick,100,3);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">+J3 ></button>
+    </div>
+    <div class="tpJogPair">
+      <button class=jogButton onmousedown="inter=setInterval(jogClick,100,-6);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">< -J6</button>
+      <input type="text" id="j6Text">
+      <button class=jogButton onmousedown="inter=setInterval(jogClick,100,6);" onmouseup="clearInterval(inter);" onmouseout="clearInterval(inter);">+J6 ></button>
+    </div>
+  </div>
+  <script src="tp.js"></script>
+  <!--                        -->
+
+  <script src="js/three.min.js"></script>
+  <script src="js/ColladaLoader.js"></script>
+  <script src="js/OrbitControls.js"></script>
+  <script src="js/dat.gui.min.js"></script>
+  <script>
+    var scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xffffff);
+    var floor = new THREE.PlaneGeometry(50, 50, 25, 25);
+    var floorColor = new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      side: THREE.DoubleSide,
+      wireframe: true
+    });
+    var floorPlane = new THREE.Mesh(floor, floorColor);
+    floorPlane.rotation.x = Math.PI / 2;
+    scene.add(floorPlane);
+
+    var renderer = new THREE.WebGLRenderer();
+
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var controls = new THREE.OrbitControls(camera,renderer.domElement);
+
+
+    //controls.update() must be called after any manual changes to the camera's transform
+    camera.position.set(0, 20, 100);
+    controls.update();
+
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    var skeleton;
+
+    var loader = new THREE.ColladaLoader();
+
+    loader.load('JD01Base.dae', function(collada) {
+      model = collada.scene;
+      skeleton = new THREE.SkeletonHelper(model);
+      skeleton.visible = false;
+
+      //set claw position
+      skeleton.bones[8].rotation.x = .5;
+      skeleton.bones[9].rotation.x = 1.5;
+      skeleton.bones[11].rotation.x = .5;
+      skeleton.bones[12].rotation.x = 1.5;
+      skeleton.bones[14].rotation.x = .5;
+      skeleton.bones[15].rotation.x = 1.5;
+
+      scene.add(skeleton);
+
+      scene.add(collada.scene);
+
+    });
+
+    camera.position.set(10,5,0);
+
+    var animate = function() {
+      requestAnimationFrame(animate);
+      controls.update();
+
+      //update boxes in tp window
+      tpUpdate();
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+  </script>
+</body>
+
+</html>
