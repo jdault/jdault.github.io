@@ -9,6 +9,7 @@ body {
 
 #tpPanel{
   position: absolute;
+  min-width: 340px;
   z-index: 2;
   background-color: #dfdfdf;
   text-align: center;
@@ -27,6 +28,17 @@ body {
   text-align:right;
   z-index: 5;
 }
+
+#stepDiv{
+  width: 50%;
+  float:left;
+}
+
+#recordDiv{
+  float:left;
+  width: 50%;
+}
+
 .tpRow p{
   float:right;
   margin-top:0;
@@ -35,9 +47,41 @@ body {
 .tpJogPair{
   position: relative;
   float: left;
-  padding-left: 10px;
+  width: 50%;
 }
 
 .tpJogPair input{
   width: 50px;
+}
+
+#programTextBox{
+  width: 100%;
+}
+
+.stepJText{
+  width:40px;
+}
+
+.stepButton{
+  float:right;
+}
+
+#programDiv{
+  float:left;
+  width:100%;
+  max-height:200px;
+  overflow-y:auto;
+}
+
+#programTitle{
+  margin-top:5px;
+  margin-bottom:0px;
+}
+
+#programDiv ol{
+  margin-top:0px;
+}
+
+#stepList li{
+  padding-top: 10px;
 }

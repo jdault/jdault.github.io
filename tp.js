@@ -105,4 +105,80 @@ function jogClick(n){
       break;
     default:
   }
+  tpUpdate();
+}
+
+function recordPoint(){
+    //create text boxes for recorded values
+    var j1Text = document.createElement("input");
+    j1Text.type = "text"
+    j1Text.classList.add("stepJText");
+
+    var j2Text = j1Text.cloneNode(true);
+    var j3Text = j1Text.cloneNode(true);
+    var j4Text = j1Text.cloneNode(true);
+    var j5Text = j1Text.cloneNode(true);
+    var j6Text = j1Text.cloneNode(true);
+
+    //take 6 digits and remove degree symbols
+    j1Text.value = document.getElementById('j1Text').value.substring(0,6).replace(/°/g,"");
+    j2Text.value = document.getElementById('j2Text').value.substring(0,6).replace(/°/g,"");
+    j3Text.value = document.getElementById('j3Text').value.substring(0,6).replace(/°/g,"");
+    j5Text.value = document.getElementById('j5Text').value.substring(0,6).replace(/°/g,"");
+    j4Text.value = document.getElementById('j4Text').value.substring(0,6).replace(/°/g,"");
+    j6Text.value = document.getElementById('j6Text').value.substring(0,6).replace(/°/g,"");
+
+    //setup test move button
+    var moveButton = document.createElement("BUTTON");
+    moveButton.innerHTML = "Test";
+    moveButton.addEventListener("click",testPoint);
+    moveButton.classList.add("stepButton");
+    //setup delete button
+    var deleteButton = document.createElement("BUTTON");
+    deleteButton.innerHTML = "Delete";
+    deleteButton.addEventListener("click",deletePoint);
+    deleteButton.classList.add("stepButton");
+
+    var ol = document.getElementById("stepList");
+    var li = document.createElement("li");
+    //li.appendChild(document.createTextNode(recString));
+    li.appendChild(j1Text);
+    li.appendChild(j2Text);
+    li.appendChild(j3Text);
+    li.appendChild(j4Text);
+    li.appendChild(j5Text);
+    li.appendChild(j6Text);
+    li.appendChild(moveButton);
+    li.appendChild(deleteButton);
+    ol.appendChild(li);
+}
+
+function testPoint(){
+  var angles = this.parentNode.childNodes;
+
+  skeleton.bones[1].rotation.y = parseFloat(angles[0].value)*3.14/180;
+  skeleton.bones[2].rotation.x = parseFloat(angles[1].value)*3.14/180;
+  skeleton.bones[3].rotation.x = parseFloat(angles[2].value)*3.14/180;
+  skeleton.bones[4].rotation.y = parseFloat(angles[3].value)*3.14/180;
+  skeleton.bones[5].rotation.x = parseFloat(angles[4].value)*3.14/180;
+  skeleton.bones[6].rotation.y = parseFloat(angles[5].value)*3.14/180;
+
+  tpUpdate();
+}
+
+function deletePoint(){
+  var list = document.getElementById("stepList");
+  list.removeChild(this.parentNode);
+}
+
+function runProgram(){
+  var children = document.getElementById("stepList").childNodes;
+  //check there is atleast one step
+  if (children.length == 1){
+     alert("Cannot Run: There are No Program Steps!\n Press \"Record Position\" to add steps");
+     return
+   }
+
+
+
 }
