@@ -73,7 +73,6 @@
   <script src="js/three.min.js"></script>
   <script src="js/ColladaLoader.js"></script>
   <script src="js/OrbitControls.js"></script>
-  <script src="js/dat.gui.min.js"></script>
   <script>
     var scene = new THREE.Scene();
     scene.background = new THREE.Color(0xffffff);
@@ -105,7 +104,7 @@
 
     var loader = new THREE.ColladaLoader();
 
-    loader.load('JD01Base.dae', function(collada) {
+    loader.load('jd01base.dae', function(collada) {
       model = collada.scene;
       skeleton = new THREE.SkeletonHelper(model);
       skeleton.visible = false;

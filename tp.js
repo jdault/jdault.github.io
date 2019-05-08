@@ -171,6 +171,9 @@ function deletePoint(){
   list.removeChild(this.parentNode);
 }
 
+var programRunning
+var tempGlob;
+
 function runProgram(){
   var children = document.getElementById("stepList").childNodes;
   //check there is atleast one step
@@ -179,6 +182,94 @@ function runProgram(){
      return
    }
 
+   runAnimate(children); //run first so no initial delay
+   programRunning = setInterval(runAnimate,100,children);  //run on loop
+}
 
+function runAnimate(program){
+  //make static var curStep to keep track of which program step we are on
+  if (typeof runAnimate.curStep == 'undefined'){
+    runAnimate.curStep = 1;
+  }
+  //end interval when final step has been run
+  if (runAnimate.curStep == program.length){
+    clearInterval(programRunning);
+    runAnimate.curStep = 1;
+    return;
+  }
+  //load final joint values
+  var angles = program[runAnimate.curStep].childNodes;
 
+  //move to joint angles
+
+  //move by stepSize until you have reached the final values
+  stepSize = .03;// radians
+  curVal = [skeleton.bones[1].rotation.y,skeleton.bones[2].rotation.x,skeleton.bones[3].rotation.x,skeleton.bones[4].rotation.y,skeleton.bones[5].rotation.x,skeleton.bones[6].rotation.y];
+  var finalVal = [parseFloat(angles[0].value)*3.14/180,parseFloat(angles[1].value)*3.14/180,parseFloat(angles[2].value)*3.14/180,parseFloat(angles[3].value)*3.14/180,parseFloat(angles[4].value)*3.14/180,parseFloat(angles[5].value)*3.14/180];
+
+  //move J1-J6
+  for ( var i = 0; i < 6; i++){
+    boneMover(curVal[i],finalVal[i],stepSize);
+    curVal[i] = tempGlob;
+  }
+
+  setAllJointRads(curVal);
+
+  //check if final position has been reached
+  var checkVals = true;
+  for (var i = 0;i<6;i++){
+    if (curVal[i] != finalVal[i]) checkVals = false;
+  }
+
+  if (checkVals) runAnimate.curStep++;  //increment program step if values are reached
+  /*
+  skeleton.bones[1].rotation.y = parseFloat(angles[0].value)*3.14/180;
+  skeleton.bones[2].rotation.x = parseFloat(angles[1].value)*3.14/180;
+  skeleton.bones[3].rotation.x = parseFloat(angles[2].value)*3.14/180;
+  skeleton.bones[4].rotation.y = parseFloat(angles[3].value)*3.14/180;
+  skeleton.bones[5].rotation.x = parseFloat(angles[4].value)*3.14/180;
+  skeleton.bones[6].rotation.y = parseFloat(angles[5].value)*3.14/180;
+
+  runAnimate.curStep++; //increment program step
+  */
+}
+
+function boneMover(curVal,finalVal,step){
+  if (curVal < finalVal){
+    curVal += step;
+    if (curVal > finalVal) curVal = finalVal; //check overshoot
+  }
+  else if (curVal > finalVal){
+    curVal += -stepSize;
+    if (curVal < finalVal) curVal = finalVal; //check overshoot
+  }
+
+  tempGlob = curVal;
+}
+
+function setAllJointAngles(angles){
+  skeleton.bones[1].rotation.y = angles[0]*3.14/180;
+  skeleton.bones[2].rotation.x = angles[1]*3.14/180;
+  skeleton.bones[3].rotation.x = angles[2]*3.14/180;
+  skeleton.bones[4].rotation.y = angles[3]*3.14/180;
+  skeleton.bones[5].rotation.x = angles[4]*3.14/180;
+  skeleton.bones[6].rotation.y = angles[5]*3.14/180;
+}
+
+function setAllJointRads(rads){
+  skeleton.bones[1].rotation.y = rads[0];
+  skeleton.bones[2].rotation.x = rads[1];
+  skeleton.bones[3].rotation.x = rads[2];
+  skeleton.bones[4].rotation.y = rads[3];
+  skeleton.bones[5].rotation.x = rads[4];
+  skeleton.bones[6].rotation.y = rads[5];
+}
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
 }

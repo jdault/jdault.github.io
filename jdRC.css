@@ -9,7 +9,7 @@ body {
 
 #tpPanel{
   position: absolute;
-  min-width: 340px;
+  min-width: 377px;
   z-index: 2;
   background-color: #dfdfdf;
   text-align: center;
